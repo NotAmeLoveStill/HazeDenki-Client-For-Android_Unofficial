@@ -1,0 +1,5 @@
+{
+  "name": "HazeDenki",
+  "description": "A high-performance, offline-capable mobile client for Haze Denki. Features local caching, fast navigation, and a modern mobile-first UI.",
+  "requestFramePermissions": []
+}

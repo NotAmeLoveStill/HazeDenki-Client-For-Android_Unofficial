@@ -1,0 +1,447 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>HazeDenki Client</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              denki: {
+                50: '#f0f9ff',
+                100: '#e0f2fe',
+                200: '#bae6fd',
+                300: '#7dd3fc',
+                400: '#38bdf8',
+                500: '#0ea5e9',
+                600: '#0284c7',
+                700: '#0369a1',
+                800: '#075985',
+                900: '#0c4a6e',
+                950: '#082f49',
+              },
+              neon: '#00ffcc',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        -webkit-tap-highlight-color: transparent;
+        background-color: #f8fafc; /* Fallback for Pearl */
+        color: #1e293b; /* Fallback for Pearl */
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+      }
+
+      /* ========================================= */
+      /* PEARL THEME (DEFAULT / LIGHT) OVERRIDES   */
+      /* Applied when no theme class is present    */
+      /* ========================================= */
+      
+      html:not(.dark):not(.theme-angel) body {
+        background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+        color: #334155;
+      }
+
+      /* Invert Dark Backgrounds to Pearl White */
+      html:not(.dark):not(.theme-angel) .bg-slate-900 {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #e2e8f0 !important;
+      }
+      
+      /* Special case for Headers/Overlays to have slight tint or transparency effect */
+      html:not(.dark):not(.theme-angel) header.bg-slate-900\/95 {
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        border-bottom-color: #e2e8f0 !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+      }
+
+      html:not(.dark):not(.theme-angel) .bg-slate-800 {
+        background-color: #ffffff !important;
+        border-color: #f1f5f9 !important;
+        box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05), 0 2px 8px -2px rgba(0, 0, 0, 0.02) !important;
+        color: #1e293b !important;
+      }
+      
+      /* Hover states for cards */
+      html:not(.dark):not(.theme-angel) article:hover {
+        box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.1), 0 8px 10px -6px rgba(14, 165, 233, 0.05) !important;
+        border-color: #bae6fd !important;
+      }
+
+      /* Inputs */
+      html:not(.dark):not(.theme-angel) input {
+        background-color: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        color: #0f172a !important;
+      }
+      html:not(.dark):not(.theme-angel) input::placeholder {
+        color: #94a3b8 !important;
+      }
+
+      /* Text Colors Inversion */
+      html:not(.dark):not(.theme-angel) .text-slate-100,
+      html:not(.dark):not(.theme-angel) .text-white {
+        color: #0f172a !important; /* Almost Black */
+      }
+      
+      html:not(.dark):not(.theme-angel) .text-slate-300 {
+        color: #475569 !important;
+      }
+      
+      html:not(.dark):not(.theme-angel) .text-slate-400 {
+        color: #64748b !important;
+      }
+      
+      html:not(.dark):not(.theme-angel) .text-slate-500 {
+        color: #94a3b8 !important;
+      }
+
+      /* Borders */
+      html:not(.dark):not(.theme-angel) .border-slate-700,
+      html:not(.dark):not(.theme-angel) .border-slate-800 {
+        border-color: #e2e8f0 !important;
+      }
+
+      /* Sidebar specific */
+      html:not(.dark):not(.theme-angel) aside {
+         background-color: #ffffff !important;
+         border-right-color: #e2e8f0 !important;
+      }
+
+      /* Buttons & Interactive */
+      html:not(.dark):not(.theme-angel) button:hover .text-white {
+         color: #0f172a !important;
+      }
+
+      /* Denki Brand adjustments for Light Mode */
+      html:not(.dark):not(.theme-angel) .bg-denki-600 {
+         background-color: #0ea5e9 !important; /* Slightly brighter blue */
+         color: #ffffff !important;
+      }
+      /* Fix text inside denki buttons (which might have text-white overridden above) */
+      html:not(.dark):not(.theme-angel) .bg-denki-600.text-white,
+      html:not(.dark):not(.theme-angel) .bg-denki-600 .text-white {
+         color: #ffffff !important; 
+      }
+      
+      /* ========================================= */
+      /* DARK THEME (OPTIONAL/CLASS BASED)         */
+      /* ========================================= */
+      html.dark:not(.theme-angel) body {
+        background-color: #0f172a;
+        color: #e2e8f0;
+      }
+      html.dark:not(.theme-angel) ::-webkit-scrollbar-track {
+        background: #1e293b;
+      }
+      
+      /* ========================================= */
+      /* ANGEL THEME OVERRIDES (NEEDY STREAMER)    */
+      /* ========================================= */
+      
+      /* Global Background: Pastel Pink/Lavender Gradient */
+      html.theme-angel body {
+        background: linear-gradient(135deg, #fff0f5 0%, #ffe8f3 100%) !important;
+        color: #31237a !important; /* Dark Indigo text */
+      }
+
+      /* Sidebar - Pastel Purple Frame */
+      html.theme-angel aside { 
+        background-color: #9c94e8 !important; /* Retro Window Purple */
+        border-right: 2px solid #4b4b8f !important;
+        color: #ffffff !important;
+        box-shadow: 4px 0 0px rgba(75, 75, 143, 0.1) !important;
+      }
+      
+      /* Sidebar Content Inset - The "Pink Background Layer" */
+      html.theme-angel aside .sidebar-content {
+        background-color: #fff0f5 !important; /* Light Pink / White background */
+        margin: 0 4px 4px 4px !important; /* Create the inset window look */
+        border: 2px solid #4b4b8f !important;
+        color: #31237a !important;
+      }
+      /* Fix hover states inside sidebar content to not be invisible */
+      html.theme-angel aside .sidebar-content button:not(.bg-denki-600):hover {
+         background-color: #ffe4f0 !important; /* Darker pink on hover */
+         color: #31237a !important;
+      }
+
+      /* Header - Pastel Purple with Dark Indigo Border */
+      html.theme-angel header { 
+        background: #9c94e8 !important; /* Retro Window Purple */
+        border-bottom: 2px solid #4b4b8f !important;
+        box-shadow: 0 4px 0px rgba(75, 75, 143, 0.1) !important;
+        color: #ffffff !important;
+      }
+      html.theme-angel aside .border-slate-800 {
+         border-color: #4b4b8f !important;
+      }
+      
+      /* Main Backgrounds to White with Purple Borders (Excluding Article) */
+      html.theme-angel .bg-slate-900,
+      html.theme-angel .bg-slate-800 { 
+        background-color: #ffffff !important;
+        border-color: #9c94e8 !important;
+        color: #31237a !important;
+      }
+      
+      /* --- HOME POST LIST ITEMS (CARDS) --- */
+      html.theme-angel app-home article {
+         display: flex !important;
+         flex-direction: column !important;
+         /* Dark Gray Background with Frosted Effect */
+         background-color: rgba(30, 32, 36, 0.85) !important;
+         backdrop-filter: blur(12px) !important;
+         -webkit-backdrop-filter: blur(12px) !important;
+         
+         border: 2px solid #9c94e8 !important;
+         box-shadow: 4px 4px 0px rgba(156, 148, 232, 0.5) !important;
+         border-radius: 6px !important; /* Slightly squarer */
+         padding-bottom: 0 !important;
+      }
+      html.theme-angel app-home .angel-window-header {
+         display: flex !important;
+         background-color: #9c94e8 !important;
+         border-bottom: 2px solid #4b4b8f !important;
+      }
+      html.theme-angel app-home article .original-tags {
+         display: none !important;
+      }
+      html.theme-angel app-home article > a {
+         flex: 1;
+         position: relative;
+         height: auto !important;
+      }
+      
+      /* --- POST DETAIL VIEW (RETRO WINDOW STYLE) --- */
+      /* Background matches settings button: #fff0f5 with #9c94e8 dots */
+      html.theme-angel app-post-detail article {
+          background-color: #fff0f5 !important;
+          background-image: radial-gradient(rgba(156, 148, 232, 0.3) 1px, transparent 1px) !important;
+          background-size: 8px 8px !important;
+          border: 2px solid #9c94e8 !important;
+          border-radius: 6px !important;
+          box-shadow: 6px 6px 0px rgba(156, 148, 232, 0.5) !important;
+          margin-top: 1rem;
+          color: #31237a !important;
+          overflow: hidden !important;
+      }
+
+      /* Fake Window Header for Post Detail */
+      html.theme-angel app-post-detail .post-header-nav {
+          background-color: #4b4b8f !important; /* Dark Indigo Bar */
+          margin-bottom: 0 !important;
+          padding: 8px 12px !important;
+          border-bottom: 2px solid #9c94e8 !important;
+          border-radius: 4px 4px 0 0 !important;
+      }
+      html.theme-angel app-post-detail .post-header-nav button {
+          color: #ffffff !important;
+          font-family: 'Courier New', monospace !important;
+          font-weight: bold !important;
+      }
+
+      /* Content Container padding */
+      html.theme-angel app-post-detail .post-content-body {
+          padding: 24px !important;
+      }
+
+      /* Text Colors in Detail View */
+      html.theme-angel app-post-detail h1 {
+          color: #31237a !important;
+          text-shadow: 2px 2px 0px rgba(156, 148, 232, 0.3) !important;
+      }
+      
+      /* Force dark text for readability on light pink background */
+      html.theme-angel app-post-detail .text-slate-400,
+      html.theme-angel app-post-detail .text-slate-300,
+      html.theme-angel app-post-detail .prose {
+          color: #31237a !important;
+      }
+      
+      html.theme-angel app-post-detail .prose strong,
+      html.theme-angel app-post-detail .prose h1,
+      html.theme-angel app-post-detail .prose h2,
+      html.theme-angel app-post-detail .prose h3,
+      html.theme-angel app-post-detail .prose li::marker {
+          color: #31237a !important;
+      }
+
+      /* Borders in Detail View */
+      html.theme-angel app-post-detail .border-slate-800,
+      html.theme-angel app-post-detail .border-slate-700 {
+          border-color: #9c94e8 !important;
+      }
+
+      /* Blockquotes */
+      html.theme-angel app-post-detail .prose blockquote {
+          background-color: rgba(255, 255, 255, 0.5) !important;
+          border-left-color: #ff7eb6 !important;
+          color: #4b4b8f !important;
+      }
+
+      /* Links */
+      html.theme-angel app-post-detail a {
+         color: #ff7eb6 !important;
+      }
+      
+      /* Tags in Detail Footer */
+      html.theme-angel app-post-detail .post-content-body .bg-slate-800 {
+         background-color: #ffffff !important;
+         border: 1px solid #9c94e8 !important;
+         color: #4b4b8f !important;
+      }
+      
+      
+      /* --- GENERAL UTILITIES --- */
+      
+      /* Text Colors in Body (Default Dark Indigo for white backgrounds) */
+      html.theme-angel .text-slate-100, 
+      html.theme-angel .text-white {
+        color: #31237a !important; 
+      }
+
+      /* Exceptions for Light Text in Headers and Dark Articles */
+      html.theme-angel header .text-slate-100,
+      html.theme-angel header .text-white,
+      html.theme-angel aside > div:first-child .text-slate-100,
+      html.theme-angel aside > div:first-child .text-white,
+      html.theme-angel .angel-window-header .text-white,
+      /* Detail Header */
+      html.theme-angel app-post-detail .post-header-nav .text-slate-400,
+      /* Home Card text overrides */
+      html.theme-angel app-home article .text-white,
+      html.theme-angel app-home article .text-slate-100,
+      html.theme-angel app-home article h2,
+      html.theme-angel app-home article span.text-\[\#ffffff\] {
+         color: #ffffff !important;
+      }
+      
+      /* Home Card secondary text */
+      html.theme-angel app-home article .text-slate-300,
+      html.theme-angel app-home article .text-slate-400,
+      html.theme-angel app-home article .text-slate-500 {
+         color: #cbd5e1 !important;
+      }
+      
+      /* Icons & Text in Headers */
+      html.theme-angel header svg,
+      html.theme-angel aside > div:first-child svg,
+      html.theme-angel header button,
+      html.theme-angel aside > div:first-child button {
+         color: #ffffff !important;
+      }
+      
+      html.theme-angel .text-slate-300,
+      html.theme-angel .text-slate-400, 
+      html.theme-angel .text-slate-500 {
+        color: #6d5ace !important;
+      }
+
+      /* Accent Colors (Pink) */
+      html.theme-angel .text-denki-400,
+      html.theme-angel .group-focus-within\:text-denki-400,
+      html.theme-angel a.text-denki-400 {
+        color: #ff7eb6 !important;
+        font-weight: bold !important;
+      }
+      
+      /* Buttons */
+      html.theme-angel .bg-denki-600 {
+        background-color: #9c94e8 !important;
+        border: 2px solid #4b4b8f !important;
+        color: #ffffff !important;
+        box-shadow: 2px 2px 0px #4b4b8f !important;
+      }
+      /* Specifically for the 'All Posts' button when active in sidebar */
+      html.theme-angel aside .sidebar-content .bg-denki-600 {
+         /* Keep text white in the purple button, overriding the generic sidebar content text color */
+         color: #ffffff !important;
+      }
+
+      /* Inputs */
+      html.theme-angel input {
+         background-color: #ffffff !important;
+         border: 2px solid #9c94e8 !important;
+         color: #31237a !important;
+         border-radius: 0px !important;
+      }
+      html.theme-angel input::placeholder {
+         color: #bfaee3 !important;
+      }
+
+      /* Scrollbar */
+      html.theme-angel ::-webkit-scrollbar-track {
+        background: #fff0f5 !important;
+      }
+      html.theme-angel ::-webkit-scrollbar-thumb {
+        background: #9c94e8 !important;
+        border: 2px solid #ffffff !important;
+      }
+      
+      /* Settings Page specific tweaks */
+      html.theme-angel .border-slate-700 {
+         border-color: #e0d4fc !important;
+      }
+      html.theme-angel h2, html.theme-angel h3 {
+         color: #31237a !important;
+         font-family: 'Courier New', monospace;
+         font-weight: 800;
+         text-transform: uppercase;
+         text-shadow: 1px 1px 0px #9c94e8;
+      }
+      /* Ensure Settings SVG icons are visible against white bg */
+      html.theme-angel section svg {
+         color: #9c94e8 !important;
+      }
+
+      /* Universal Transition */
+      * {
+        transition-property: background-color, border-color, color, box-shadow;
+        transition-duration: 300ms;
+      }
+    </style>
+    <script type="importmap">
+{
+  "imports": {
+    "rxjs": "https://esm.sh/rxjs@^7.8.2?conditions=es2015",
+    "rxjs/operators": "https://esm.sh/rxjs@^7.8.2/operators?conditions=es2015",
+    "rxjs/ajax": "https://esm.sh/rxjs@^7.8.2/ajax?conditions=es2015",
+    "rxjs/webSocket": "https://esm.sh/rxjs@^7.8.2/webSocket?conditions=es2015",
+    "rxjs/testing": "https://esm.sh/rxjs@^7.8.2/testing?conditions=es2015",
+    "rxjs/fetch": "https://esm.sh/rxjs@^7.8.2/fetch?conditions=es2015",
+    "@angular/compiler": "https://esm.sh/@angular/compiler@^21.0.8?external=rxjs",
+    "@angular/platform-browser": "https://esm.sh/@angular/platform-browser@^21.0.8?external=rxjs",
+    "@angular/core": "https://esm.sh/@angular/core@^21.0.8?external=rxjs",
+    "@angular/router": "https://esm.sh/@angular/router@^21.0.8?external=rxjs",
+    "@angular/common": "https://esm.sh/@angular/common@^21.0.8?external=rxjs",
+    "@capacitor/cli": "https://esm.sh/@capacitor/cli@^8.0.1?external=rxjs"
+  }
+}
+</script>
+</head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>
